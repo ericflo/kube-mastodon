@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mastodon-streaming
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mastodon-streaming
+    spec:
+      containers:
+        - name: streaming
+          image: tootsuite/mastodon:v2.4.2
+          command: ["npm", "run", "start"]
+          ports:
+            - name: streaming
+              containerPort: 4000
+          envFrom:
+            - configMapRef:
+                name: mastodon
+            - secretRef:
+                name: mastodon
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 25m

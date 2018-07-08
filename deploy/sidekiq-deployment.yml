@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mastodon-sidekiq
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mastodon-sidekiq
+    spec:
+      containers:
+        - name: sidekiq
+          image: tootsuite/mastodon:v2.4.2
+          command: ["/usr/bin/env", "bash", "-c", "echo \"${CAFILE_RB}\" > config/initializers/cafile.rb && bundle exec rails assets:precompile && bundle exec sidekiq -q default -q mailers -q pull -q push"]
+          env:
+            - name: CAFILE_RB
+              value: |
+                Rails.application.configure do
+                  config.action_mailer.smtp_settings[:ca_file] = "/etc/ssl/certs/ca-certificates.crt"
+                end
+          envFrom:
+            - configMapRef:
+                name: mastodon
+            - secretRef:
+                name: mastodon
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 50m

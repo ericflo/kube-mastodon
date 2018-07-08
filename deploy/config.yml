@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mastodon
+data:
+  REDIS_HOST: mastodon-redis
+  REDIS_PORT: "6379"
+  DB_HOST: mastodon-postgres
+  DB_USER: mastodon
+  DB_NAME: mastodon
+  DB_PORT: "5432"
+  LOCAL_HTTPS: "true"
+  SMTP_AUTH_METHOD: plain
+  SMTP_OPENSSL_VERIFY_MODE: peer
+  SMTP_ENABLE_STARTTLS_AUTO: "true"
+  S3_ENABLED: "true"
+  #SINGLE_USER_MODE: "true"
+  #EMAIL_DOMAIN_BLACKLIST: "example1.com|example2.de|etc"
+  #EMAIL_DOMAIN_WHITELIST: "example1.com|example2.de|etc"
+  #DEFAULT_LOCALE: de

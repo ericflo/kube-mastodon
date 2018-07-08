@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mastodon
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+    - secretName: mastodon-cert
+      hosts:
+        - YOUR_DOMAIN_NAME_HERE
+  backend:
+    serviceName: mastodon-web
+    servicePort: 3000
+  rules:
+  - host: YOUR_DOMAIN_NAME_HERE
+    http:
+      paths:
+      - path: /api/v1/streaming
+        backend:
+          serviceName: mastodon-streaming
+          servicePort: 4000
+      - path: /
+        backend:
+          serviceName: mastodon-web
+          servicePort: 3000

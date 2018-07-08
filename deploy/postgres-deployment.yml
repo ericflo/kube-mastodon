@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mastodon-postgres
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mastodon-postgres
+    spec:
+      volumes:
+        - name: mastodon-postgres-data
+          persistentVolumeClaim:
+            claimName: mastodon-postgres
+      containers:
+        - name: postgres
+          image: postgres:10.4
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: mastodon
+                  key: DB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mastodon
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mastodon
+                  key: DB_PASS
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: mastodon-postgres-data
+              mountPath: /var/lib/postgresql/data

@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mastodon-web
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mastodon-web
+    spec:
+      containers:
+        - name: web
+          image: tootsuite/mastodon:v2.4.2
+          command: ["/usr/bin/env", "bash", "-c", "bundle exec rails assets:precompile && bundle exec rails s -p 3000 -b 0.0.0.0"]
+          ports:
+            - name: web
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: mastodon
+            - secretRef:
+                name: mastodon
+          resources:
+            requests:
+              memory: 350Mi
+              cpu: 100m

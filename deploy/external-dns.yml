@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mastodon-external-dns
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mastodon-external-dns
+    spec:
+      containers:
+      - name: external-dns
+        image: registry.opensource.zalan.do/teapot/external-dns:latest
+        args:
+        - --source=ingress
+        - --domain-filter=$(LOCAL_DOMAIN)
+        - --provider=google
+        - --registry=txt
+        - --txt-owner-id=extdns
+        env:
+        - name: LOCAL_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: mastodon
+              key: LOCAL_DOMAIN
+        
