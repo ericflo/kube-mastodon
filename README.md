@@ -1,7 +1,46 @@
 kube-mastodon
--------------
+=============
 
-This repository contains everything you need to get a Mastodon server running on Kubernetes.
+This repository contains everything you need to get a Mastodon server running on Kubernetes 2.5.0.
+
+
+Upgrading from 2.4.2
+--------------------
+
+Upgrade the checkout of this repo:
+
+```
+git pull origin master
+```
+
+Replace the new deployments:
+
+```
+kubectl replace -f deploy/web-deployment.yml
+kubectl replace -f deploy/streaming-deployment.yml
+kubectl replace -f deploy/sidekiq-deployment.yml
+```
+
+Wait a minute or so for these to redeploy...
+
+Now run a database upgrade by connecting to the new pod:
+
+```
+export MASTODON_POD=$(kubectl get pods -l app=mastodon-web -o jsonpath='{.items[0].metadata.name}')
+kubectl exec $MASTODON_POD  -i -t -- bash -il
+```
+
+And once you're connected:
+
+```
+$ RAILS_ENV=production bundle exec rails db:migrate
+```
+
+You're all set - things should be upgraded now!
+
+
+Deployment
+----------
 
 Copy the template files to their proper places:
 
@@ -48,7 +87,8 @@ Finally, connect to the web pod so we can set up the database
 (use the pod name from before):
 
 ```
-kubectl exec mastodon-web-c6cc65857-bhqlg  -i -t -- bash -il
+export MASTODON_POD=$(kubectl get pods -l app=mastodon-web -o jsonpath='{.items[0].metadata.name}')
+kubectl exec $MASTODON_POD  -i -t -- bash -il
 ```
 
 Once you're connected, run this command to set up the db,

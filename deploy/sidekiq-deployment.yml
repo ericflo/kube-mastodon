@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: sidekiq
-          image: tootsuite/mastodon:v2.4.2
+          image: tootsuite/mastodon:v2.5.0
           command: ["/usr/bin/env", "bash", "-c", "echo \"${CAFILE_RB}\" > config/initializers/cafile.rb && bundle exec rails assets:precompile && bundle exec sidekiq -q default -q mailers -q pull -q push"]
           env:
             - name: CAFILE_RB
