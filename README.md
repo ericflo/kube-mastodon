@@ -1,7 +1,7 @@
 kube-mastodon
 =============
 
-This repository contains everything you need to get a Mastodon server running on Kubernetes 2.5.0.
+This repository contains everything you need to get a Mastodon server running on Mastodon 2.5.0.
 
 
 Upgrading from 2.4.2
